@@ -1,8 +1,7 @@
 #summary Circuit for interfacing Arduino to HDMI CEC line
 
 = Introduction =
-
-Add your content here.
+This circuit both reads and drives the CEC line.  The +3.3v, +5v and ground all are provided by the Arduino.  The CEC line is pin 13 and CEC ground is pin 17 on a Type A HDMI connector.
 
 
 = Details =
