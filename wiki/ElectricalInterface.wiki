@@ -1,0 +1,10 @@
+#summary Circuit for interfacing Arduino to HDMI CEC line
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+http://cec-arduino.googlecode.com/svn/www/CEC_Electrical.PNG
