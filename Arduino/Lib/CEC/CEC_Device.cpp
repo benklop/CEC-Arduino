@@ -2,9 +2,6 @@
 
 bool XX_GetLineState();
 void XX_SetLineState(CEC_Device* device, bool state);
-unsigned long times[200];
-int index = 0;
-bool shown = false;
 
 CEC_Device::CEC_Device(int physicalAddress)
 : CEC_LogicalDevice(physicalAddress)
@@ -68,19 +65,6 @@ void CEC_Device::Run()
   if (_lastLineState2 != state)
   {
     _lastLineState2 = state;
-//    if (index < 200)
-//    {
-//      times[index++] = micros();
-//    }
-//    else
-//    {
-//      if (!shown)
-//      {
-//        shown = true;
-//        for (int i = 0; i < 200; i++)
-//          DbgPrint("%d: %ld\n", i, times[i]);
-//      }
-//    }
     SignalIRQ();
   }
   CEC_LogicalDevice::Run();
