@@ -3,7 +3,7 @@ from ceccodes import *
 def getascii(bytes):
   newstring = str()
   for c in bytes:
-    string = string + chr(c)
+    newstring = newstring + chr(c)
   return newstring
 
 def printpacket(packet):
