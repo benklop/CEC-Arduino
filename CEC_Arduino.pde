@@ -42,7 +42,7 @@ void setup()
   pinMode(IN_LINE, INPUT);
 
   digitalWrite(OUT_LINE, LOW);
-  delay(2000);
+  delay(1000);
   Serial.begin(115200);
 
 
