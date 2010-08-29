@@ -1,0 +1,289 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <math.h>
+#include <string.h>
+#include <sys/termios.h>
+#include <sys/ioctl.h>
+#include "main.h"
+
+void   
+dispMdlns (char const *s, int status, int mdln)
+{   
+  if ((status & mdln) == mdln)
+    printf ("+");
+  else
+    printf ("-");
+  printf ("%s ", s);
+}
+
+static int
+setBaudRate (struct termios *rs232_attr, int baudrate)
+{
+  switch (baudrate) { 
+    case 50:
+      rs232_attr->c_cflag |= B50;
+      break;
+    case 75:
+      rs232_attr->c_cflag |= B75;
+      break;
+    case 110:
+      rs232_attr->c_cflag |= B110;
+      break;
+    case 134:
+      rs232_attr->c_cflag |= B134;
+      break;
+    case 150:
+      rs232_attr->c_cflag |= B150;
+      break;
+    case 200:
+      rs232_attr->c_cflag |= B200;
+      break;
+    case 300:
+      rs232_attr->c_cflag |= B300;
+      break;
+    case 600:
+      rs232_attr->c_cflag |= B600;
+      break;
+    case 1200:
+      rs232_attr->c_cflag |= B1200;
+      break;
+    case 2400:
+      rs232_attr->c_cflag |= B2400;
+      break;
+    case 4800:
+      rs232_attr->c_cflag |= B4800;
+      break;
+    case 9600:
+      rs232_attr->c_cflag |= B9600;
+      break;
+    case 19200:
+      rs232_attr->c_cflag |= B19200;
+      break;
+    case 38400:
+      rs232_attr->c_cflag |= B38400;
+      break;
+    case 57600:
+      rs232_attr->c_cflag |= B57600;
+      break;
+    case 115200:
+      rs232_attr->c_cflag |= B115200;
+      break;
+    case 230400:
+      rs232_attr->c_cflag |= B230400;
+      break;
+    default:
+      fprintf (stderr, "error: unsupported baud rate\n");
+      return ERROR;
+  }
+
+  return OK;
+}
+
+/*****************************************************************************
+ * SET CHARACTER SIZE
+ ****************************************************************************/
+static int
+    setDataBits (struct termios *rs232_attr, int databits)
+{
+  switch (databits) {   
+    case 5:
+      rs232_attr->c_cflag |= CS5;
+      break;
+    case 6:  
+      rs232_attr->c_cflag |= CS6;
+      break;
+    case 7:
+      rs232_attr->c_cflag |= CS7;
+      break;
+    case 8:
+      rs232_attr->c_cflag |= CS8;
+      break;
+    default:
+      fprintf (stderr, "error: unsupported character size\n");
+      return ERROR;
+  }
+  return OK;
+}
+
+/*****************************************************************************
+ * SET PARITY
+ ****************************************************************************/
+static int
+    setParity (struct termios *rs232_attr, char parity)
+{
+  switch (toupper(parity)) {   
+    case 'N':
+      break;
+    case 'E':  
+      rs232_attr->c_cflag |= PARENB;
+      break;
+    case 'O': 
+      rs232_attr->c_cflag |= PARODD;
+      break;
+    default:
+      fprintf (stderr, "error: unsupported parity mode\n");
+      return ERROR;
+  }
+  return OK;
+}
+
+/*****************************************************************************
+ * SET STOP BITS
+ ****************************************************************************/
+static int
+    setStopBits (struct termios *rs232_attr, int stopbits)
+{
+  switch (stopbits) {   
+    case 1:
+      break;
+    case 2:  
+      rs232_attr->c_cflag |= CSTOPB;
+      break;
+    default:
+      fprintf (stderr, "error: unsupported number of stop bits\n");
+      return ERROR;
+  }
+  return OK;
+}
+
+/*****************************************************************************
+ * SET HARDWARE and SOFTWARE FLOW CONTROL
+ ****************************************************************************/
+static int
+    setFlowCtl (struct termios *rs232_attr, int xonxoff, int rtscts)
+{
+  if (xonxoff) {
+    rs232_attr->c_iflag |= IXON;
+    rs232_attr->c_iflag |= IXOFF;
+  }
+   
+  if (rtscts)
+    rs232_attr->c_cflag |= CRTSCTS;
+   
+  return OK;
+}
+
+tRS232
+rs232_open (char const *device, int dbug)
+{
+  tRS232 rs232;
+
+  rs232 = open (device, O_RDWR | O_NOCTTY);
+   
+  return rs232;
+}
+
+void
+    modemLine (int *mdlns, int enabled, int mask)
+{
+  if (enabled)
+    *mdlns |= mask;
+  else
+    *mdlns &= ~mask;
+}
+
+int
+    rs232_mdlns (tRS232 rs232, tMdLines *mdLine, int dbug)
+{
+  int mdlns;
+
+  if ( ioctl (rs232,TIOCMGET,&mdlns) == -1) {
+    fprintf (stderr,"error ioctl TIOCMGET\n"); 
+    //Abort (rs232);
+  }
+  modemLine (&mdlns, mdLine->dtr, (int)TIOCM_DTR);
+  modemLine (&mdlns, mdLine->rts, (int)TIOCM_RTS);
+   
+  if ( ioctl (rs232,TIOCMSET,&mdlns) == -1) {
+    fprintf(stderr,"error ioctl(TIOCMSET)\n"); 
+    //Abort (rs232);
+  }
+   
+  if (dbug) {
+    if ( ioctl (rs232,TIOCMGET,&mdlns) == -1) {
+      fprintf (stderr,"error ioctl TIOCMGET\n"); 
+      //Abort (rs232);
+    }
+    dispMdlns ("dtr", mdlns, TIOCM_DTR);
+    dispMdlns ("rts", mdlns, TIOCM_RTS);
+    dispMdlns ("cts", mdlns, TIOCM_CTS);
+    dispMdlns ("dsr", mdlns, TIOCM_DSR);
+    printf ("\n");
+  }
+  return OK;
+}
+
+int
+    rs232_init (tRS232 rs232, tCommParms *commParm, int dbug)
+{
+  if (dbug)
+    printf ("%d %d%c%d ", commParm->baudrate,
+            commParm->databits, commParm->parity, commParm->stopbits);
+   
+  rs232_attr.c_oflag = 0;
+  rs232_attr.c_lflag = 0;
+  rs232_attr.c_iflag = ICRNL | IGNPAR;
+  rs232_attr.c_cflag = CREAD | CLOCAL; 
+  rs232_attr.c_cc[VMIN] = 1;
+//   if (setBaudRate (&rs232_attr, commParm->baudrate) == ERROR) Abort (rs232);
+//   if (setDataBits (&rs232_attr, commParm->databits) == ERROR) Abort (rs232);
+//   if (setParity   (&rs232_attr, commParm->parity  ) == ERROR) Abort (rs232);
+//   if (setStopBits (&rs232_attr, commParm->stopbits) == ERROR) Abort (rs232);
+//   if (setFlowCtl  (&rs232_attr, commParm->xonxoff, commParm->rtscts) == ERROR)
+    //Abort (rs232);
+
+  if ( tcsetattr (rs232, TCSANOW, &rs232_attr) == -1) { 
+    fprintf (stderr, "error setting tcsetattr on %s\n", commParm->device);  
+    //Abort (rs232);
+  }
+
+  return OK;
+}
+
+
+tPortData pd;
+int get_port(){
+  if (pd.initialized){
+    return pd.fd;
+  }
+  tCommParms commParm;
+  tCmdParms cmdParm;
+  tOutParms outParm;
+  tProgParms  progParm;
+  tMdLines mdLine;
+
+  progParm.debug  = OFF;
+  progParm.rndm   = OFF;
+
+  mdLine.dtr  = ON;
+  mdLine.rts  = OFF;
+
+  commParm.device     = globalArgs.port;
+  commParm.baudrate   = 115200;
+  commParm.databits   = 8;
+  commParm.parity     = 'n';
+  commParm.stopbits   = 1;
+  commParm.xonxoff    = OFF;
+  commParm.rtscts     = OFF;
+
+  int fd = rs232_open (commParm.device, progParm.debug);
+  if (fd < 0) return fd;
+
+  rs232_init  (fd, &commParm, progParm.debug);
+  rs232_mdlns (fd, &mdLine, progParm.debug);
+  pd.fd = fd;
+  pd.initialized = 1;
+  return fd;
+}
+
+int main (int argc, char **argv){
+  int fd = get_port(); //open fd
+  int count = 0;
+  int response;
+ // while(1){
+  count = read(fd, &response, 1);
+  
+}

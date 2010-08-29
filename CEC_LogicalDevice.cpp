@@ -1,4 +1,5 @@
-#include "CEC.h"
+#include "CEC_LogicalDevice.h"
+#include "packetserial.h"
 
 int CEC_LogicalDevice::_validLogicalAddresses[6][5] = 
 	{	{CLA_TV,					CLA_FREE_USE,			CLA_UNREGISTERED,		CLA_UNREGISTERED,	CLA_UNREGISTERED,	},
@@ -69,7 +70,8 @@ bool CEC_LogicalDevice::ProcessStateMachine(bool* success)
 					else
 					{
 						_logicalAddress = CLA_UNREGISTERED;
-						DbgPrint("Logical address assigned: %d\n", _logicalAddress);
+						//DbgPrint("Logical address assigned: %d\r\n", _logicalAddress);
+                                                //DbgPrint("Physical addresss used: %d\r\n", _physicalAddress);
 						_primaryState = CEC_READY;
 					}
 				}
@@ -77,7 +79,8 @@ bool CEC_LogicalDevice::ProcessStateMachine(bool* success)
 				{
 					// We hereby claim this as our logical address!
 					_logicalAddress = _validLogicalAddresses[_deviceType][_tertiaryState];
-					DbgPrint("Logical address assigned: %d\n", _logicalAddress);
+					//DbgPrint("Logical address assigned: %d\n", _logicalAddress);
+                                        //DbgPrint("Physical addresss used: %d\r\n", _physicalAddress);
 					_primaryState = CEC_READY;
 				}
 			}
@@ -132,8 +135,8 @@ void CEC_LogicalDevice::OnTransmitComplete(bool success)
 		while (!ProcessStateMachine(&success))
 			;
 	}
-        else
-          DbgPrint("Transmit: %d\n", success);
+        //else
+          //DbgPrint("Transmit: %d\n", success);
 }
 
 void CEC_LogicalDevice::Run()
@@ -149,6 +152,14 @@ void CEC_LogicalDevice::Run()
         if (wait != (unsigned long)-2)
 	        _waitTime = wait;
 	return;
+}
+
+unsigned char CEC_LogicalDevice::getLogical(){
+  return _logicalAddress;
+}
+
+int CEC_LogicalDevice::getPhysical(){
+  return _physicalAddress;
 }
 
 

@@ -21,7 +21,9 @@ public:
 
 	virtual void Run();
 	virtual bool TransmitFrame(int targetAddress, unsigned char* buffer, int count);
-
+    virtual unsigned char getLogical();
+    virtual int getPhysical();
+    
 protected:
 	virtual bool IsISRTriggered() = 0;
 
@@ -82,3 +84,4 @@ private:
 };
 
 #endif // CEC_H__
+

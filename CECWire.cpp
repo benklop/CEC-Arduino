@@ -111,7 +111,7 @@ void CEC_Electrical::ReceivedBit(bool state)
 
 unsigned long CEC_Electrical::LineError()
 {
-        DbgPrint("%p: Line Error!\n", this);
+        //DbgPrint("%p: Line Error!\n", this);
 	if (_follower || _broadcast)
 	{
 		_secondaryState = CEC_RCV_LINEERROR;
@@ -393,6 +393,7 @@ unsigned long CEC_Electrical::Process()
 			{
 				// This is a state change from an ACK and isn't part of our state
 				// tracking.
+                               // DbgPrint("Ack Received\r\n");
                                 waitTime = -2;
 				break;
 			}
@@ -668,3 +669,4 @@ void CEC_Electrical::OnTransmitBegin()
 void CEC_Electrical::OnTransmitComplete(bool success)
 {
 }
+

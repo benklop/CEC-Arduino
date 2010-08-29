@@ -1,4 +1,6 @@
 #include "CEC_Device.h"
+#include "packetserial.h"
+#include "cmdcodes.h"
 
 bool XX_GetLineState();
 void XX_SetLineState(CEC_Device* device, bool state);
@@ -18,7 +20,8 @@ void CEC_Device::OnReady()
 {
   // This is called after the logical address has been
   // allocated
-  DbgPrint("Device ready\n");
+  //DbgPrint("Device ready\n");
+  //packet_serial_send("Device Ready",12);
 }
 
 extern "C" unsigned long millis();
@@ -27,10 +30,25 @@ void CEC_Device::OnReceive(int source, int dest, unsigned char* buffer, int coun
   // This is called when a frame is received.  To transmit
   // a frame call TransmitFrame.  To receive all frames, even
   // those not addressed to this device, set Promiscuous to true.
-  DbgPrint("Packet received at %ld: %d -> %d\n", millis(), source, dest);
-  for (int i = 0; i < count; i++)
-    DbgPrint("%02X ", buffer[i]);
-  DbgPrint("\n");
+  //DbgPrint("Packet received at %ld: %d -> %d\n", millis(), source, dest);
+  //for (int i = 0; i < count; i++)
+    //DbgPrint("%02X ", buffer[i]);
+  //DbgPrint("\r\n");
+
+  //process and transmit serial packet
+  int newcount = count + 3;
+  unsigned char newbuffer[newcount];
+  newbuffer[0] = RECV_PACKET;
+  newbuffer[1] = source;
+  newbuffer[2] = dest;
+  int i;
+  for (i = newcount - count; i< newcount; i++){ //space three for the cmd, src and dest
+    newbuffer[i] = buffer[i - (newcount - count)]; //-2 on old buffer index to account for above
+  }
+
+  packet_serial_send(newbuffer, newcount);
+  //byte* payload, byte length
+  
 }
 
 bool CEC_Device::LineState()
@@ -69,3 +87,4 @@ void CEC_Device::Run()
   }
   CEC_LogicalDevice::Run();
 }
+

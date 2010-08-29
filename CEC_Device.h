@@ -1,7 +1,7 @@
 #ifndef CEC_DEVICE_H__
 #define CEC_DEVICE_H__
 
-#include "CEC.h"
+#include "CEC_LogicalDevice.h"
 
 class CEC_Device : public CEC_LogicalDevice
 {
@@ -29,3 +29,4 @@ friend bool XX_GetLineState();
 };
 
 #endif // CEC_DEVICE_H__
+
