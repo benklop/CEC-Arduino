@@ -77,6 +77,7 @@ bool CEC_LogicalDevice::ProcessStateMachine(bool* success)
 				{
 					// We hereby claim this as our logical address!
 					_logicalAddress = _validLogicalAddresses[_deviceType][_tertiaryState];
+					SetAddress(_logicalAddress);
 					DbgPrint("Logical address assigned: %d\n", _logicalAddress);
 					_primaryState = CEC_READY;
 				}
