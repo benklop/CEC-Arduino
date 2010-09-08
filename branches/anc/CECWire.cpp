@@ -302,8 +302,10 @@ unsigned long CEC_Electrical::Process()
 				int ack;
 				if (difftime >= 400 && difftime <= 800)
 					ack = _broadcast ? CEC_ACK : CEC_NAK;
+                  //ack = CEC_ACK;
 				else if (difftime >= 1300 && difftime <= 1700)
 					ack = _broadcast ? CEC_NAK : CEC_ACK;
+                  //ack = CEC_ACK;
 				else
 				{
 					// Illegal state.  Go back to CEC_IDLE to wait for a valid

@@ -1,5 +1,6 @@
 #define STATUS 0xFE
 #define STATUS_ADD 0xa0
+#define REQ_ADD 0xa1
 #define SEND_PACKET 0x03
 #define RECV_PACKET 0x04
 #define QUERY_EDID  0x05
