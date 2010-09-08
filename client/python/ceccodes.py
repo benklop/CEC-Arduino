@@ -1,3 +1,5 @@
+BROADCAST = 0x0F
+
 CEC_FEATURE_ABORT = 0x00 
 CEC_OTP_IMAGE_ON = 0x04 
 CEC_TUNER_UP = 0x05 
@@ -137,4 +139,84 @@ CEC_VENDOR_COMMAND_ID   : "CEC_VENDOR_COMMAND_ID",
 CEC_TIMER_CLEAR_EXTERNAL    : "CEC_TIMER_CLEAR_EXTERNAL",
 CEC_TIMER_SET_EXTERNAL  : "CEC_TIMER_SET_EXTERNAL"}
 
-cec_version = { 0x00 : "1.1", 0x01 : "1.2", 0x02 : "1.2a", 0x03 : "1.3", 0x04 : "1.3a" }
+#VERSION 
+V11= 0x00
+V12= 0x01
+V12A= 0x02
+V13= 0x03
+V13A= 0x04
+
+cec_version = { V11 : "1.1", V12 : "1.2", V12A : "1.2a", V13 : "1.3", V13A : "1.3a" }
+
+cec_abort_reason = { 
+0 : "Unrecognized opcode",
+1 : "Not in correct mode to respond",
+2 : "Cannot provide source",
+3 : "Invalid operand",
+4 : "Refused" }
+
+cec_analog_brodcast_type = { 0x00 : "Cable", 0x01 : "Satellite", 0x02 : "Terrestrial" }
+
+cec_audio_rate = { 0 : "Rate Control Off", 1 : "Standard rate (IEEE 1394)", 2 : "Fast rate (IEEE 1394)", 3 : "Slow rate (IEEE 1394)", 4 : "Standard Rate (HDMI)", 5 : "Fast Rate (HDMI)", 6 : "Slow Rate (HDMI)"}
+
+cec_deck_control_mode = { 1 : "Skip Forward", 2:"Skip Reverse", 3:"Stop", 4:"Eject"}
+cec_deck_info = {
+0x11:"Play",
+0x12:"Record",
+0x13:"Play Reverse",
+0x14:"Still",
+0x15:"Slow",
+0x16:"Slow Reverse",
+0x17:"Fast Forward",
+0x18:"Fast Reverse",
+0x19:"No Media",
+0x1B:"Skip Forward",
+0x1C:"Skip Reverse",
+0x1D:"Index Search Forward",
+0x1E:"Index Search Reverse",
+0x1F:"Other"}
+cec_device_type = {
+0:"TV",
+1:"Recording Device",
+2:"Reserved",
+3:"Tuner",
+4:"Playback Device",
+5:"Audio System"}
+cec_menu_req_type = { 0:"Activate", 1:"Deactivate", 2:"Query"}
+cec_menu_state = {0:"Activated",1:"Deactivated"}
+cec_system_information = [0x32,0x83,0x84,0x91,0x9E,0x9F]
+
+SYS_INFO = [
+CEC_INFO_LANG,
+CEC_INFO_REQ_PHYS_ADDR,
+CEC_INFO_PHYS_ADDR,
+CEC_INFO_LANG_REQ,
+CEC_INFO_VERSION,
+CEC_INFO_VERSION_REQ,
+CEC_VENDOR_ID_REQ ]
+
+STATE = [
+CEC_POWER_REQ_STATUS ]
+
+ROUTING = [
+CEC_ROUTING_REQ_PATH ]
+
+REQUESTS = [
+CEC_AUDIO_MODE_REQ,
+CEC_AUDIO_MODE_REQ,
+CEC_AUDIO_STATUS_REQ,
+CEC_DECK_REQ_STATUS,
+CEC_INFO_LANG_REQ,
+CEC_INFO_REQ_PHYS_ADDR,
+CEC_INFO_VERSION_REQ,
+CEC_MENU_REQ,
+CEC_OSD_REQ_OSD,
+CEC_POWER_REQ_STATUS,
+CEC_ROUTING_REQ_ACTIVE,
+CEC_ROUTING_REQ_PATH,
+CEC_TUNER_STATUS_REQ,
+CEC_VENDOR_CEC_VERSION_REQ,
+CEC_VENDOR_ID_REQ,
+CEC_OTR_REC_OFF,
+CEC_OTR_REC_SCREEN
+]

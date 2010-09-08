@@ -36,7 +36,7 @@ void CEC_LogicalDevice::Initialize(CEC_DEVICE_TYPE type)
             _primaryState = CEC_READY;
         }
 }
-
+void set_led(byte led, bool on);
 bool CEC_LogicalDevice::ProcessStateMachine(bool* success)
 {
 	unsigned char buffer[1];
@@ -79,9 +79,11 @@ bool CEC_LogicalDevice::ProcessStateMachine(bool* success)
 				{
 					// We hereby claim this as our logical address!
 					_logicalAddress = _validLogicalAddresses[_deviceType][_tertiaryState];
+                    SetAddress(_logicalAddress);
 					//DbgPrint("Logical address assigned: %d\n", _logicalAddress);
                                         //DbgPrint("Physical addresss used: %d\r\n", _physicalAddress);
 					_primaryState = CEC_READY;
+                    set_led(2, true);
 				}
 			}
 			else

@@ -1,6 +1,5 @@
 #include "Serial.h"
-#include <Wire.h>
-#include "WProgram.h"
+#include "packetserial.h"
 typedef enum {
   IdleWait,
   ReadLength,
@@ -24,6 +23,8 @@ static byte position;
 
 static boolean validate_checksum(byte checksum);
 void packet_serial_send(byte* payload, byte length);
+//extern void handle_packet(byte* payload, byte length);
+
 
 void packet_serial_run(){
 
@@ -34,7 +35,9 @@ void packet_serial_run(){
     //check for bytes waiting
     if (Serial.available()){
       if (Serial.read() == STARTBYTE)
-        currentState=ReadLength; 
+        currentState=ReadLength;
+      else
+        currentState=SendNack; 
     }
     //if first byte = x02, state = ReadLength
     //else send reject //ignore?
@@ -88,6 +91,7 @@ void packet_serial_run(){
 
   case HandlePacket:
     //call process packet function
+    handle_packet(buffer,length);
     currentState = ResetBuffer;
     break;
 
